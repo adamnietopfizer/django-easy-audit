@@ -4,7 +4,8 @@ from django.utils.module_loading import import_string
 
 from easyaudit.middleware.easyaudit import get_current_request
 from easyaudit.models import LoginEvent
-from easyaudit.settings import REMOTE_ADDR_HEADER, WATCH_AUTH_EVENTS, LOGGING_BACKEND
+from easyaudit.settings import REMOTE_ADDR_HEADER, WATCH_AUTH_EVENTS, LOGGING_BACKEND, \
+    CUSTOM_USER_PRIMARY_KEY
 
 audit_logger = import_string(LOGGING_BACKEND)()
 
@@ -15,7 +16,7 @@ def user_logged_in(sender, request, user, **kwargs):
             login_event = audit_logger.login({
                 'login_type': LoginEvent.LOGIN,
                 'username': getattr(user, user.USERNAME_FIELD),
-                'user_id': getattr(user, 'id', None),
+                'user_id': getattr(user, CUSTOM_USER_PRIMARY_KEY, None),
                 'remote_ip': request.META[REMOTE_ADDR_HEADER]
             })
     except:
@@ -28,7 +29,7 @@ def user_logged_out(sender, request, user, **kwargs):
             login_event = audit_logger.login({
                 'login_type': LoginEvent.LOGOUT,
                 'username': getattr(user, user.USERNAME_FIELD),
-                'user_id': getattr(user, 'id', None),
+                'user_id': getattr(user, CUSTOM_USER_PRIMARY_KEY, None),
                 'remote_ip': request.META[REMOTE_ADDR_HEADER]
             })
     except:
