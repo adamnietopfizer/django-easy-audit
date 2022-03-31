@@ -18,7 +18,7 @@ from easyaudit.middleware.easyaudit import get_current_request, \
 from easyaudit.models import CRUDEvent
 from easyaudit.settings import REGISTERED_CLASSES, UNREGISTERED_CLASSES, \
     WATCH_MODEL_EVENTS, CRUD_DIFFERENCE_CALLBACKS, LOGGING_BACKEND, \
-    DATABASE_ALIAS
+    DATABASE_ALIAS, CUSTOM_USER_PRIMARY_KEY
 from easyaudit.utils import get_m2m_field_name, model_delta
 
 logger = logging.getLogger(__name__)
@@ -106,7 +106,7 @@ def pre_save(sender, instance, raw, using, update_fields, **kwargs):
                                 'changed_fields': changed_fields,
                                 'content_type_id': c_t.id,
                                 'object_id': instance.pk,
-                                'user_id': getattr(user, 'id', None),
+                                'user_id': getattr(user, CUSTOM_USER_PRIMARY_KEY, None),
                                 'datetime': timezone.now(),
                                 'user_pk_as_string': str(user.pk) if user else user
                             })
@@ -278,7 +278,7 @@ def m2m_changed(sender, instance, action, reverse, model, pk_set, using, **kwarg
                             'changed_fields': changed_fields,
                             'content_type_id': c_t.id,
                             'object_id': instance.pk,
-                            'user_id': getattr(user, 'id', None),
+                            'user_id': getattr(user, CUSTOM_USER_PRIMARY_KEY, None),
                             'datetime': timezone.now(),
                             'user_pk_as_string': str(user.pk) if user else user
                         })
@@ -332,7 +332,7 @@ def post_delete(sender, instance, using, **kwargs):
                             'object_json_repr': object_json_repr,
                             'content_type_id': c_t.id,
                             'object_id': obj_id,
-                            'user_id': getattr(user, 'id', None),
+                            'user_id': getattr(user, CUSTOM_USER_PRIMARY_KEY, None),
                             'datetime': timezone.now(),
                             'user_pk_as_string': str(user.pk) if user else user
                         })
