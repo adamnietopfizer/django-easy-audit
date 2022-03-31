@@ -113,6 +113,14 @@ Below are some of the settings you may want to use. These should be defined in y
   Default is `False`. The events visible through the admin interface are editable by default by a
   superuser. Set this to `True` if you wish to make the recorded events read-only through the admin
   UI.
+  
+* `DJANGO_EASY_AUDIT_CUSTOM_USER_PRIMARY_KEY`
+
+  Set this to the primary key used by a custom User model. Note, the custom User model should inherit from the `AbstractUser` class in
+  `django.contrib.auth.models`. If the custom User model has a non-standard primary key, for example,
+  `user_id` you would set `DJANGO_EASY_AUDIT_CUSTOM_USER_PRIMARY_KEY = "user_id"`. By default, if this variable
+  is not set then the variable defaults to `id` which is what the `django.contrib.auth.models.AbstractUser` model uses by default 
+  for its primary key.  
 
 * `DJANGO_EASY_AUDIT_LOGGING_BACKEND`
 
