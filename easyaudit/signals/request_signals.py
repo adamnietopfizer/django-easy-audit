@@ -9,7 +9,7 @@ from django.utils.module_loading import import_string
 # try and get the user from the request; commented for now, may have a bug in this flow.
 # from easyaudit.middleware.easyaudit import get_current_user
 from easyaudit.settings import REMOTE_ADDR_HEADER, UNREGISTERED_URLS, REGISTERED_URLS, WATCH_REQUEST_EVENTS, \
-    LOGGING_BACKEND
+    LOGGING_BACKEND, CUSTOM_USER_PRIMARY_KEY
 
 import re
 
@@ -78,7 +78,7 @@ def request_started_handler(sender, **kwargs):
             if session:
                 user_id = session.get_decoded().get('_auth_user_id')
                 try:
-                    user = get_user_model().objects.get(id=user_id)
+                    user = get_user_model().objects.get(**{CUSTOM_USER_PRIMARY_KEY:user_id})
                 except:
                     user = None
 
@@ -88,7 +88,7 @@ def request_started_handler(sender, **kwargs):
         'url': path,
         'method': method,
         'query_string': query_string,
-        'user_id': getattr(user, 'id', None),
+        'user_id': getattr(user, CUSTOM_USER_PRIMARY_KEY, None),
         'remote_ip': remote_ip,
         'datetime': timezone.now()
     })
