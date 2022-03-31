@@ -36,7 +36,10 @@ class EasyAuditModelAdmin(admin.ModelAdmin):
     def get_changelist_instance(self, *args, **kwargs):
         changelist_instance = super().get_changelist_instance(*args, **kwargs)
         user_ids = [obj.user_id for obj in changelist_instance.result_list]
-        self.users_by_id = {user.id: user for user in get_user_model().objects.filter(id__in=user_ids)}
+        query = { "%s__in" % settings.CUSTOM_USER_PRIMARY_KEY: user_ids }
+        self.users_by_id = {}
+        for user in get_user_model().objects.filter(**query):
+            self.users_by_id[getattr(user, settings.CUSTOM_USER_PRIMARY_KEY)] = user
         return changelist_instance
 
     def get_readonly_fields(self, request, obj=None):
