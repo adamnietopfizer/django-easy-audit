@@ -33,6 +33,10 @@ REMOTE_ADDR_HEADER = getattr(settings, 'DJANGO_EASY_AUDIT_REMOTE_ADDR_HEADER', '
 
 USER_DB_CONSTRAINT = bool(getattr(settings, 'DJANGO_EASY_AUDIT_USER_DB_CONSTRAINT', True))
 
+# Allows for different primary key for a custom model inherited from django.contrib.auth.models.AbstractUser
+# Defaults to "id" which is the standard primary key for django user models
+CUSTOM_USER_PRIMARY_KEY = getattr(settings, 'DJANGO_EASY_AUDIT_CUSTOM_USER_PRIMARY_KEY', "id")
+
 # logging backend settings
 LOGGING_BACKEND = getattr(settings, 'DJANGO_EASY_AUDIT_LOGGING_BACKEND', 'easyaudit.backends.ModelBackend')
 
