@@ -172,7 +172,7 @@ def post_save(sender, instance, created, raw, using, update_fields, **kwargs):
                                 'object_json_repr': object_json_repr,
                                 'content_type_id': c_t.id,
                                 'object_id': instance.pk,
-                                'user_id': getattr(user, 'id', None),
+                                'user_id': getattr(user, CUSTOM_USER_PRIMARY_KEY, None),
                                 'datetime': timezone.now(),
                                 'user_pk_as_string': str(user.pk) if user else user
                             })
