@@ -12,14 +12,13 @@ from django.db.models import signals
 from django.utils import timezone
 from django.utils.encoding import force_str
 from django.utils.module_loading import import_string
-
 from easyaudit.middleware.easyaudit import get_current_request, \
     get_current_user
 from easyaudit.models import CRUDEvent
 from easyaudit.settings import REGISTERED_CLASSES, UNREGISTERED_CLASSES, \
     WATCH_MODEL_EVENTS, CRUD_DIFFERENCE_CALLBACKS, LOGGING_BACKEND, \
     DATABASE_ALIAS, CUSTOM_USER_PRIMARY_KEY
-from easyaudit.utils import get_m2m_field_name, model_delta
+from easyaudit.utils import get_m2m_field_name, model_delta, UUIDSerializer
 
 logger = logging.getLogger(__name__)
 audit_logger = import_string(LOGGING_BACKEND)()
@@ -232,7 +231,7 @@ def m2m_changed(sender, instance, action, reverse, model, pk_set, using, **kwarg
 
                 # add reverse M2M changes to event. must use json lib because
                 # django serializers ignore extra fields.
-                tmp_repr = json.loads(object_json_repr)
+                tmp_repr = json.loads(object_json_repr, cls=UUIDSerializer)
 
                 m2m_rev_field = _m2m_rev_field_name(instance._meta.concrete_model, model)
                 related_instances = getattr(instance, m2m_rev_field).all()
